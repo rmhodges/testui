@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Tree;
+//import com.badlogic.gdx.scenes.scene2d.ui.Tree.Node;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
@@ -21,6 +23,8 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 
 import java.text.NumberFormat;
+
+import static com.badlogic.gdx.scenes.scene2d.ui.Tree.*;
 
 /**
  * Created by rhodges on 19/04/16.
@@ -139,6 +143,22 @@ public class ImageLoader extends ApplicationAdapter {
 
         final Image img = new Image(image);
 
+
+        Target target = new Target(img) {
+
+            @Override
+            public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
+                System.out.println("Drag");
+                return false;
+            }
+
+            @Override
+            public void drop(Source source, Payload payload, float x, float y, int pointer) {
+
+                System.out.println("Drop");
+            }
+        };
+
         final TextureRegion imageFlipped = new TextureRegion(image);
         imageFlipped.flip(true, true);
 
@@ -179,7 +199,19 @@ public class ImageLoader extends ApplicationAdapter {
 
         imageDialog.add(img);
 
+        final Tree tree = new Tree(skin);
+        final Node moo1 = new Node(new Label("moo1", skin));
+        final Node moo2 = new Node(new Label("moo2", skin));
+        final Node moo3 = new Node(new Label("moo3", skin));
+        final Node moo4 = new Node(new Label("moo4", skin));
+        final Node moo5 = new Node(new Label("moo5", skin));
+        tree.add(moo1);
+        tree.add(moo2);
+        moo2.add(moo3);
+        moo3.add(moo4);
+        tree.add(moo5);
 
+        imageDialog.add(tree);
 
         midLabel = new Label(stage.getWidth() / 2 + "," + stage.getHeight() / 2, skin);
         midLabel.setColor(Color.GRAY);
