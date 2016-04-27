@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 
+import java.io.File;
 import java.text.NumberFormat;
 
 import static com.badlogic.gdx.scenes.scene2d.ui.Tree.*;
@@ -33,6 +34,8 @@ import static com.badlogic.gdx.scenes.scene2d.ui.Tree.*;
 public class ImageLoader extends ApplicationAdapter {
 
     Window imageDialog;
+
+
     Skin skin;
     Texture texture;
     Label midLabel;
@@ -237,7 +240,15 @@ public class ImageLoader extends ApplicationAdapter {
 
         shapeRenderer = new ShapeRenderer();
 
+
+        CommonFileDialog cfd = new CommonFileDialog(skin);
+
+        cfd.show(stage);
+
+//        stage.addActor(cfd.getMainDialog());
+
     }
+
 
     public void resize (int width, int height) {
         // See below for what true means.
