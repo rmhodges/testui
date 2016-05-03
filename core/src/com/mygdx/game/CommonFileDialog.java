@@ -1,40 +1,43 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import java.io.File;
+import java.util.ArrayList;
 
-import static com.badlogic.gdx.scenes.scene2d.ui.Tree.*;
+
 
 /**
  * Created by rhodges on 27/04/16.
  */
 public class CommonFileDialog {
 
-    private Dialog mainDialog;
+    private final Dialog mainDialog;
 
     private String title = "Common File Dialog";
 
-    private String currentPath = "/";
+    private String currentPath = "/home/rhodges/Downloads";
 
     private Skin skin;
 
-    private Tree tree;
+    private List displayList;
+
+    private ArrayList<String> items;
+
+    public TextButton cancelButton;
+
 
     public CommonFileDialog(Skin skin) {
         this.skin = skin;
 
-        mainDialog = new Dialog(title,skin);
-        mainDialog.setResizable(true);
-
-        mainDialog.setModal(true);
-
-
+        mainDialog = new Dialog(title, skin);
 
         Table table = new Table();
         mainDialog.add(table);
-
 
         Label pathLabel = new Label("Path:", skin);
 
@@ -42,60 +45,65 @@ public class CommonFileDialog {
 
         TextButton pathButton = new TextButton("go", skin);
 
+        TextButton loadButton = new TextButton("load", skin);
+
+        cancelButton = new TextButton("cancel", skin);
+
         table.add(pathLabel);
-        table.add(pathField);
+        table.add(pathField).width(370);
         table.add(pathButton);
 
-        table.row();
+        table.row().pad(20);
 
+        displayList = new List(skin);
+        refreshFileModel();
 
-        tree = new Tree(skin);
 
         final Table fileTable = new Table(skin);
 
-        Table directoryTable = new Table (skin);
+        Table directoryTable = new Table(skin);
+        ScrollPane fileScrollPane = new ScrollPane(directoryTable, skin);
+        directoryTable.add(displayList);
 
-        ScrollPane fileScrollPane = new ScrollPane(directoryTable,skin);
-
-        fileScrollPane.setScrollBarPositions(true, true);
-
-        directoryTable.setFillParent(true);
-        directoryTable.add(tree);
-//        directoryTable.add(tree).height(200);
-
-
-        refreshFileModel ();
-
-        fileTable.add (fileScrollPane).height(200);
+        fileTable.add(fileScrollPane).height(200);
         fileTable.row();
-
-//        fileScrollPane.setBounds(0,0,100,100);
-        fileScrollPane.setTransform(true);
-        fileScrollPane.setLayoutEnabled(true);
 
 
         table.add(fileTable).colspan(3);
-    }
 
-    private void refreshFileDisplay (){
+        table.row();
 
-        tree.clear();
+        table.add(cancelButton).colspan(2).right().width(100);
+        table.add(loadButton).right().width(100);
+
+        cancelButton.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
 
+
+                mainDialog.hide();
+
+                return true;
+
+            }
+        });
     }
 
     private void refreshFileModel (){
-        tree.clear();
 
-        File dir = new File("/home/rhodges/Downloads");
+        items = new ArrayList<String>();
+
+        File dir = new File(currentPath);
         File[] filesList = dir.listFiles();
 
         for (File file : filesList) {
-            if (file.isFile()) {
-                final Node node = new Node(new Label(file.getName(), skin));
-                tree.add(node);
+            if (file.isFile() && file.getName().trim().length() > 1) {
+                items.add(file.getName().trim());
             }
         }
+        displayList.setItems(items.toArray());
+
 
     }
 
@@ -107,4 +115,5 @@ public class CommonFileDialog {
     public Dialog getMainDialog() {
         return mainDialog;
     }
+
 }

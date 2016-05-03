@@ -9,8 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 //import com.badlogic.gdx.scenes.scene2d.ui.Tree.Node;
@@ -202,19 +201,19 @@ public class ImageLoader extends ApplicationAdapter {
 
         imageDialog.add(img);
 
-        final Tree tree = new Tree(skin);
-        final Node moo1 = new Node(new Label("moo1", skin));
-        final Node moo2 = new Node(new Label("moo2", skin));
-        final Node moo3 = new Node(new Label("moo3", skin));
-        final Node moo4 = new Node(new Label("moo4", skin));
-        final Node moo5 = new Node(new Label("moo5", skin));
-        tree.add(moo1);
-        tree.add(moo2);
-        moo2.add(moo3);
-        moo3.add(moo4);
-        tree.add(moo5);
+//        final Tree tree = new Tree(skin);
+//        final Node moo1 = new Node(new Label("moo1", skin));
+//        final Node moo2 = new Node(new Label("moo2", skin));
+//        final Node moo3 = new Node(new Label("moo3", skin));
+//        final Node moo4 = new Node(new Label("moo4", skin));
+//        final Node moo5 = new Node(new Label("moo5", skin));
+//        tree.add(moo1);
+//        tree.add(moo2);
+//        moo2.add(moo3);
+//        moo3.add(moo4);
+//        tree.add(moo5);
 
-        imageDialog.add(tree);
+//        imageDialog.add(tree);
 
         midLabel = new Label(stage.getWidth() / 2 + "," + stage.getHeight() / 2, skin);
         midLabel.setColor(Color.GRAY);
@@ -243,9 +242,18 @@ public class ImageLoader extends ApplicationAdapter {
 
         CommonFileDialog cfd = new CommonFileDialog(skin);
 
+        cfd.cancelButton.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                System.out.println("Done!!!!!!!!!!!");
+                return true;
+            }
+        });
+
+
         cfd.show(stage);
 
-//        stage.addActor(cfd.getMainDialog());
 
     }
 
@@ -265,18 +273,13 @@ public class ImageLoader extends ApplicationAdapter {
 
     }
 
+
+
     @Override
     public void render()
     {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        stage.act();
-        stage.draw();
-
-//        stage.draw();
-//        stage.act(Gdx.graphics.getDeltaTime());
-
 
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -289,6 +292,14 @@ public class ImageLoader extends ApplicationAdapter {
         batch.setProjectionMatrix(stage.getCamera().combined);
         batch.draw(userTexture, 450, 350);
         batch.end();
+
+
+        stage.draw();
+        stage.act(Gdx.graphics.getDeltaTime());
+
+//        stage.act();
+//        stage.draw();
+
     }
 
     @Override
