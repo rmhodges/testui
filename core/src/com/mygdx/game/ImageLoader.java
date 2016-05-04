@@ -11,20 +11,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Tree;
-//import com.badlogic.gdx.scenes.scene2d.ui.Tree.Node;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 
-import java.io.File;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 
-import static com.badlogic.gdx.scenes.scene2d.ui.Tree.*;
 
 /**
  * Created by rhodges on 19/04/16.
@@ -46,6 +41,7 @@ public class ImageLoader extends ApplicationAdapter {
     Texture userTexture;
     private SpriteBatch batch;
 
+    private java.util.List<String> selectedFiles = new ArrayList<String>();
 
     private Stage stage;
 
@@ -197,23 +193,9 @@ public class ImageLoader extends ApplicationAdapter {
         Button imgButton = new Button(new Image(image),skin);
 
         imageDialog.add(imgButton);
-//        imageDialog.button("Option 2", 2L);
 
         imageDialog.add(img);
 
-//        final Tree tree = new Tree(skin);
-//        final Node moo1 = new Node(new Label("moo1", skin));
-//        final Node moo2 = new Node(new Label("moo2", skin));
-//        final Node moo3 = new Node(new Label("moo3", skin));
-//        final Node moo4 = new Node(new Label("moo4", skin));
-//        final Node moo5 = new Node(new Label("moo5", skin));
-//        tree.add(moo1);
-//        tree.add(moo2);
-//        moo2.add(moo3);
-//        moo3.add(moo4);
-//        tree.add(moo5);
-
-//        imageDialog.add(tree);
 
         midLabel = new Label(stage.getWidth() / 2 + "," + stage.getHeight() / 2, skin);
         midLabel.setColor(Color.GRAY);
@@ -240,14 +222,17 @@ public class ImageLoader extends ApplicationAdapter {
         shapeRenderer = new ShapeRenderer();
 
 
-        CommonFileDialog cfd = new CommonFileDialog(skin);
-
-        cfd.cancelButton.addListener(new InputListener(){
+        CommonFileDialog cfd = new CommonFileDialog(skin, new CommonFileListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            public void dialogExit() {
+                System.out.println("Exit Dialog");
+            }
 
-                System.out.println("Done!!!!!!!!!!!");
-                return true;
+            @Override
+            public void loadFile(String file) {
+
+                System.out.println("Adding " + file);
+                selectedFiles.add(file);
             }
         });
 

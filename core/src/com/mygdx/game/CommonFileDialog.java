@@ -28,11 +28,15 @@ public class CommonFileDialog {
 
     private ArrayList<String> items;
 
-    public TextButton cancelButton;
+    private TextButton cancelButton;
+
+    private CommonFileListener listener;
 
 
-    public CommonFileDialog(Skin skin) {
+
+    public CommonFileDialog(Skin skin, final CommonFileListener listener) {
         this.skin = skin;
+        this.listener = listener;
 
         mainDialog = new Dialog(title, skin);
 
@@ -41,7 +45,7 @@ public class CommonFileDialog {
 
         Label pathLabel = new Label("Path:", skin);
 
-        TextField pathField = new TextField(currentPath, skin);
+        final TextField pathField = new TextField(currentPath, skin);
 
         TextButton pathButton = new TextButton("go", skin);
 
@@ -88,6 +92,17 @@ public class CommonFileDialog {
 
             }
         });
+
+        loadButton.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                listener.loadFile( pathField.getText() + "/" + displayList.getSelected() );
+
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
+
     }
 
     private void refreshFileModel (){
