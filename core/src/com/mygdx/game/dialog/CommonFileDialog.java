@@ -1,10 +1,8 @@
-package com.mygdx.game;
+package com.mygdx.game.dialog;
 
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import java.io.File;
 import java.util.ArrayList;

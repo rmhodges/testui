@@ -16,6 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.mygdx.game.dialog.CommonFileDialog;
+import com.mygdx.game.dialog.CommonFileListener;
+import com.mygdx.game.window.TextureWindow;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -212,7 +215,7 @@ public class ImageLoader extends ApplicationAdapter {
         stage.addActor(topLabel);
         stage.addActor(botLabel);
 
-        stage.addActor(imageDialog);
+//        stage.addActor(imageDialog);
 
 
         midLabel.setPosition(stage.getWidth() / 2, stage.getHeight() / 2);
@@ -237,8 +240,12 @@ public class ImageLoader extends ApplicationAdapter {
         });
 
 
-        cfd.show(stage);
+//        cfd.show(stage);
 
+
+        TextureWindow textureWindow = new TextureWindow(skin);
+
+        stage.addActor(textureWindow.getMainWindow());
 
     }
 

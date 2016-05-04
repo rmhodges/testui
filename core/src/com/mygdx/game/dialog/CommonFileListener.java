@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.dialog;
 
 /**
  * Created by rhodges on 04/05/16.
