@@ -2,11 +2,13 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -49,8 +51,18 @@ public class ImageLoader extends ApplicationAdapter {
     private Stage stage;
 
     public void create () {
-        stage = new Stage(new StretchViewport(800, 600));
+        stage = new Stage(new StretchViewport(1024, 768));
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+//        skin = new Skin(Gdx.files.internal("commodore/commodore64ui/uiskin.json"));
+
+        AssetManager manager = new AssetManager();
+
+//        manager.load("skins/ui-blue.atlas", TextureAtlas.class);
+//        manager.finishLoading();
+//        TextureAtlas atlas = manager.get("skins/ui-blue.atlas", TextureAtlas.class);
+
+
+//        skin = new Skin(Gdx.files.internal("data/uiskin.json"), atlas);
 
         texture= new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 
