@@ -1,14 +1,18 @@
 package com.mygdx.game.window;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.game.actor.ImageActor;
 import com.mygdx.game.actor.ImageSelectionListener;
+import com.mygdx.game.dialog.CommonFileDialog;
+import com.mygdx.game.dialog.CommonFileListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,8 @@ public class TextureWindow {
 
     private Skin skin;
 
+    private Stage stage;
+
     private final Window mainWindow;
 
 
@@ -34,9 +40,11 @@ public class TextureWindow {
         textureFilenames.add("data/animation.png");
     }
 
-    public TextureWindow(Skin skin) {
+    public TextureWindow(Skin skin, Stage stage) {
 
         this.skin = skin;
+
+        this.stage = stage;
 
         mainWindow = new Window(title, skin);
 
@@ -53,7 +61,7 @@ public class TextureWindow {
         table.row();
 
         Table imageListTable = new Table (skin);
-        table.add(imageListTable).left().width(400);
+        table.add(imageListTable).left().width(250);
 
         Table imageListContainer = new Table (skin);
         ScrollPane textureScrollPane = new ScrollPane(imageListContainer, skin);
@@ -72,19 +80,65 @@ public class TextureWindow {
                 }
             });
 
-            imageListContainer.add(imgActor.getImage()).height(99);
+            imageListContainer.add(imgActor.getImage()).height(90).width(190);
 
         }
 
         TextButton loadImage = new TextButton("Load Image...",skin);
 
+        loadImage.addListener(new ClickListener(){
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                loadImage();
+            }
+        });
+
         table.row();
 
-        table.add(loadImage).right().pad(5);
+        table.add(loadImage).pad(10).right();
+
+        table.row();
+
+        Label selectedLabel = new Label("Selected:", skin);
+
+        table.add(selectedLabel).pad(5).left();
+
+        table.row();
+
+        Texture placeholder = new Texture(Gdx.files.internal("data/badlogic.jpg" ) );
+
+        TextureRegion placeholderRegion = new TextureRegion(placeholder);
+
+        Image placeholderActor = new Image(placeholderRegion);
+
+        table.add(placeholderActor).width(200).height(200);
+
 
         mainWindow.pack();
     }
 
+    public void loadImage (){
+
+        System.out.println("Window Load Dialog");
+
+        CommonFileDialog cfd = new CommonFileDialog(skin, new CommonFileListener() {
+            @Override
+            public void dialogExit() {
+                System.out.println("Exit Dialog");
+            }
+
+            @Override
+            public void loadFile(String file) {
+
+                System.out.println("Adding " + file);
+                textureFilenames.add(file);
+            }
+        });
+
+        cfd.show(stage);
+
+    }
 
     public Window getMainWindow() {
         return mainWindow;

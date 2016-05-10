@@ -1,6 +1,7 @@
 package com.mygdx.game.dialog;
 
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 
@@ -122,6 +123,7 @@ public class CommonFileDialog {
 
 
     public void show (Stage stage){
+
         mainDialog.show(stage);
     }
 
