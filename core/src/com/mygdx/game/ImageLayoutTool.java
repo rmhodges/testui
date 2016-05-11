@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.dialog.CommonFileDialog;
 import com.mygdx.game.dialog.CommonFileListener;
 import com.mygdx.game.stage.LayoutGridStage;
+import com.mygdx.game.window.PasteImageListener;
 import com.mygdx.game.window.TextureWindow;
 
 import java.text.NumberFormat;
@@ -59,16 +60,11 @@ public class ImageLayoutTool extends ApplicationAdapter {
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 //        skin = new Skin(Gdx.files.internal("commodore/commodore64ui/uiskin.json"));
 
-
-
-
-//        stage = new Stage(new StretchViewport(1024, 768));
-
         gridStage = new LayoutGridStage(skin);
 
         stage = gridStage.getStage();
 
-        texture= new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+//        texture= new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 
         userTexture = new Texture(Gdx.files.internal("data/t8890.png"));
 
@@ -204,6 +200,24 @@ public class ImageLayoutTool extends ApplicationAdapter {
 
 
         TextureWindow textureWindow = new TextureWindow(skin, stage);
+
+        textureWindow.addPasteImageListener(new PasteImageListener() {
+            @Override
+            public void pasteImage(String filename) {
+
+                Texture selectedTexture = new Texture(Gdx.files.internal(filename));
+
+                final TextureRegion selectedTextureRegion = new TextureRegion(selectedTexture);
+
+                final Image selectedImage = new Image(selectedTextureRegion);
+
+                stage.addActor(selectedImage);
+
+                selectedImage.setPosition(100,100);
+
+
+            }
+        });
 
         stage.addActor(textureWindow.getMainWindow());
 

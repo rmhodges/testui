@@ -1,11 +1,9 @@
 package com.mygdx.game.window;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -30,14 +28,25 @@ public class TextureWindow {
 
     private Stage stage;
 
+    private String selectedImageFilename = "data/badlogic.jpg";
+
     private final Window mainWindow;
 
+    private Table table;
+
+    private List<PasteImageListener> pasteImageListeners = new ArrayList<PasteImageListener>();
+
+    private Image selectedImage;
 
     {
         textureFilenames.add("data/animation.png");
         textureFilenames.add("data/debug.png");
         textureFilenames.add("data/default.png");
         textureFilenames.add("data/animation.png");
+    }
+
+    public void addPasteImageListener(PasteImageListener listener) {
+        pasteImageListeners.add(listener);
     }
 
     public TextureWindow(Skin skin, Stage stage) {
@@ -48,9 +57,9 @@ public class TextureWindow {
 
         mainWindow = new Window(title, skin);
 
-        Table table = new Table(skin);
+        table = new Table(skin);
 
-        table.setSize(500,200);
+        table.setSize(500, 200);
 
         mainWindow.add(table);
 
@@ -60,16 +69,16 @@ public class TextureWindow {
 
         table.row();
 
-        Table imageListTable = new Table (skin);
+        Table imageListTable = new Table(skin);
         table.add(imageListTable).left().width(250);
 
-        Table imageListContainer = new Table (skin);
+        Table imageListContainer = new Table(skin);
         ScrollPane textureScrollPane = new ScrollPane(imageListContainer, skin);
 
         imageListTable.add(textureScrollPane).height(100);
 
 
-        for (String imageFilename : textureFilenames){
+        for (String imageFilename : textureFilenames) {
 
             ImageActor imgActor = new ImageActor(imageFilename);
 
@@ -77,6 +86,8 @@ public class TextureWindow {
                 @Override
                 public void selected(ImageActor actor) {
                     System.out.println("I have been clicked for image : " + actor.getImageFilename());
+                    selectedImageFilename = actor.getImageFilename();
+                    displaySelectedImage(selectedImageFilename);
                 }
             });
 
@@ -84,9 +95,9 @@ public class TextureWindow {
 
         }
 
-        TextButton loadImage = new TextButton("Load Image...",skin);
+        TextButton loadImage = new TextButton("Load Image...", skin);
 
-        loadImage.addListener(new ClickListener(){
+        loadImage.addListener(new ClickListener() {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -106,19 +117,50 @@ public class TextureWindow {
 
         table.row();
 
-        Texture placeholder = new Texture(Gdx.files.internal("data/badlogic.jpg" ) );
+        Texture placeholder = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 
         TextureRegion placeholderRegion = new TextureRegion(placeholder);
 
-        Image placeholderActor = new Image(placeholderRegion);
+        selectedImage = new Image(placeholderRegion);
 
-        table.add(placeholderActor).width(200).height(200);
+        table.add(selectedImage).width(200).height(200);
 
+        table.row();
+
+        TextButton pasteImage = new TextButton("Paste Image...", skin);
+
+        pasteImage.addListener(new ClickListener() {
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                System.out.println("Generate paste image event");
+
+                for (PasteImageListener listener : pasteImageListeners) {
+                    listener.pasteImage(selectedImageFilename);
+                }
+            }
+        });
+
+        table.add(pasteImage).pad(10).right();
 
         mainWindow.pack();
     }
 
-    public void loadImage (){
+    void displaySelectedImage(String filename) {
+
+        Cell<Image> cell = table.getCell(selectedImage);
+
+        Texture placeholder = new Texture(Gdx.files.internal(filename));
+
+        TextureRegion placeholderRegion = new TextureRegion(placeholder);
+
+        selectedImage = new Image(placeholderRegion);
+
+        cell.setActor(selectedImage);
+    }
+
+    public void loadImage() {
 
         System.out.println("Window Load Dialog");
 
