@@ -19,7 +19,7 @@ public class CommonFileDialog {
 
     private String title = "Common File Dialog";
 
-    private String currentPath = "/home/rhodges/Downloads";
+    private String currentPath = "/home/rhodges/Downloads/messing/testui/core/assets/images";
 
     private Skin skin;
 

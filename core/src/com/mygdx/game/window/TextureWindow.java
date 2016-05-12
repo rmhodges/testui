@@ -39,10 +39,10 @@ public class TextureWindow {
     private Image selectedImage;
 
     {
-        textureFilenames.add("data/animation.png");
-        textureFilenames.add("data/debug.png");
-        textureFilenames.add("data/default.png");
-        textureFilenames.add("data/animation.png");
+        textureFilenames.add("images/groundGrass.png");
+        textureFilenames.add("images/heli.png");
+        textureFilenames.add("images/hill1.png");
+        textureFilenames.add("images/barrack.png");
     }
 
     public void addPasteImageListener(PasteImageListener listener) {
@@ -127,9 +127,9 @@ public class TextureWindow {
 
         table.row();
 
-        TextButton pasteImage = new TextButton("Paste Image...", skin);
+        TextButton pasteImageButton = new TextButton("Paste Image...", skin);
 
-        pasteImage.addListener(new ClickListener() {
+        pasteImageButton.addListener(new ClickListener() {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -142,7 +142,7 @@ public class TextureWindow {
             }
         });
 
-        table.add(pasteImage).pad(10).right();
+        table.add(pasteImageButton).pad(10).right();
 
         mainWindow.pack();
     }
