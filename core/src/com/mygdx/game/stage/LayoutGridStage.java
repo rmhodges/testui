@@ -8,13 +8,16 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.mygdx.game.actor.GameObject;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by rhodges on 06/05/16.
  */
-public class LayoutGridStage {
+public class LayoutGridStage implements VirtualStage {
 
     private Stage stage;
 
@@ -28,6 +31,30 @@ public class LayoutGridStage {
 
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
+    private List<GameObject> gameObjectList = new ArrayList<GameObject>();
+
+    @Override
+    public void addVirtualSprite(GameObject gameObject) {
+        stage.addActor(gameObject.getActor());
+
+        if (!gameObjectList.contains(gameObjectList)){
+            gameObjectList.add(gameObject);
+        }
+    }
+
+    @Override
+    public void renderStage() {
+        // Render Background Grid
+        this.renderGrid();
+
+        // Render the Actors in the stage
+        stage.draw();
+        stage.act(Gdx.graphics.getDeltaTime());
+
+        // Render Additional Information such as Physics
+        // TODO
+
+    }
 
     public LayoutGridStage(Skin skin) {
 
@@ -72,7 +99,7 @@ public class LayoutGridStage {
         shapeRenderer.end();
     }
 
-    public void render (){
+    private void renderGrid (){
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
@@ -105,9 +132,6 @@ public class LayoutGridStage {
         dottedLine(5, 0, (stage.getHeight() / 2) + 300, stage.getWidth(), (stage.getHeight() / 2) + 300);
         dottedLine(5, 0, (stage.getHeight() / 2) + 400, stage.getWidth(), (stage.getHeight() / 2) + 400);
         dottedLine(5, 0, (stage.getHeight() / 2) + 500, stage.getWidth(), (stage.getHeight() / 2) + 500);
-
-        stage.draw();
-        stage.act(Gdx.graphics.getDeltaTime());
 
     }
 

@@ -3,12 +3,13 @@ package com.mygdx.game.actor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.mygdx.game.stage.VirtualStage;
 import com.mygdx.game.window.ManipulationWindow;
 
 /**
@@ -18,7 +19,7 @@ public class GameObject {
 
     private final String filename;
 
-    private final Stage stage;
+    private final VirtualStage stage;
 
     private final DragAndDrop dragAndDrop = new DragAndDrop();
 
@@ -26,7 +27,10 @@ public class GameObject {
 
     final Image selectedImage;
 
-    public GameObject(final Skin skin, final Stage stage, final String filename) {
+
+
+
+    public GameObject(final Skin skin, final VirtualStage stage, final String filename) {
         this.skin = skin;
         this.stage = stage;
         this.filename = filename;
@@ -41,9 +45,9 @@ public class GameObject {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                ManipulationWindow manipulationWindow = new ManipulationWindow(skin, stage, filename);
+                ManipulationWindow manipulationWindow = new ManipulationWindow(skin, stage.getStage(), filename);
 
-                stage.addActor(manipulationWindow.getMainWindow());
+                stage.getStage().addActor(manipulationWindow.getMainWindow());
             }
         });
 
@@ -51,7 +55,7 @@ public class GameObject {
 
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer, DragAndDrop.Payload payload, DragAndDrop.Target target) {
-                stage.addActor(selectedImage);
+                stage.getStage().addActor(selectedImage);
             }
 
             @Override
@@ -65,10 +69,8 @@ public class GameObject {
         });
     }
 
-    public void addToStage () {
-        stage.addActor(selectedImage);
-
-        selectedImage.setPosition(100, 100);
+    public Actor getActor (){
+        return selectedImage;
     }
 
 }

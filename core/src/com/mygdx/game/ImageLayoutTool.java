@@ -23,6 +23,7 @@ import com.mygdx.game.actor.GameObject;
 import com.mygdx.game.dialog.CommonFileDialog;
 import com.mygdx.game.dialog.CommonFileListener;
 import com.mygdx.game.stage.LayoutGridStage;
+import com.mygdx.game.stage.VirtualStage;
 import com.mygdx.game.window.ManipulationWindow;
 import com.mygdx.game.window.PasteImageListener;
 import com.mygdx.game.window.TextureWindow;
@@ -39,7 +40,7 @@ public class ImageLayoutTool extends ApplicationAdapter {
 
     Skin skin;
 
-    private LayoutGridStage gridStage;
+    private VirtualStage gridStage;
 
     Texture userTexture;
 
@@ -60,36 +61,6 @@ public class ImageLayoutTool extends ApplicationAdapter {
 
         stage = gridStage.getStage();
 
-        userTexture = new Texture(Gdx.files.internal("data/t8890.png"));
-
-        final TextureRegion userImage = new TextureRegion(userTexture);
-
-        final Image sourceImage = new Image(userImage);
-        stage.addActor(sourceImage);
-
-        sourceImage.setPosition(100,100);
-
-        batch = new SpriteBatch();
-
-        dragAndDrop.addSource(new DragAndDrop.Source(sourceImage) {
-
-            @Override
-            public void dragStop(InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
-                stage.addActor(sourceImage);
-            }
-
-            @Override
-            public DragAndDrop.Payload dragStart (InputEvent event, float x, float y, int pointer) {
-                DragAndDrop.Payload payload = new DragAndDrop.Payload();
-                payload.setDragActor(sourceImage);
-                dragAndDrop.setDragActorPosition(-x, -y + sourceImage.getHeight());
-                return payload;
-            }
-
-        });
-
-
-
         Gdx.input.setInputProcessor(stage);
 
 
@@ -99,10 +70,9 @@ public class ImageLayoutTool extends ApplicationAdapter {
             @Override
             public void pasteImage(final String filename) {
 
-                GameObject gameObject = new GameObject(skin, stage, filename);
+                GameObject gameObject = new GameObject(skin, gridStage, filename);
 
-                gameObject.addToStage();
-
+                gridStage.addVirtualSprite(gameObject);
             }
         });
 
@@ -126,7 +96,7 @@ public class ImageLayoutTool extends ApplicationAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        gridStage.render();
+        gridStage.renderStage();
 
 
     }
