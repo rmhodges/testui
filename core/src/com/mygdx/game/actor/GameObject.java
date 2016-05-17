@@ -3,6 +3,7 @@ package com.mygdx.game.actor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -11,6 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.mygdx.game.stage.VirtualStage;
 import com.mygdx.game.window.ManipulationWindow;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by rhodges on 12/05/16.
@@ -71,6 +75,18 @@ public class GameObject {
 
     public Actor getActor (){
         return selectedImage;
+    }
+
+    public List<Vector2> collisionBoundaries (){
+
+        List<Vector2> boundary = new ArrayList<Vector2> ();
+
+        boundary.add(new Vector2(selectedImage.getImageX(), selectedImage.getImageY()));
+        boundary.add(new Vector2(selectedImage.getImageX() + selectedImage.getImageWidth(), selectedImage.getImageY()));
+        boundary.add(new Vector2(selectedImage.getImageX() + selectedImage.getImageWidth(), selectedImage.getImageY() + selectedImage.getImageHeight()));
+        boundary.add(new Vector2(selectedImage.getImageX(), selectedImage.getImageY() + selectedImage.getImageHeight()));
+
+        return boundary;
     }
 
 }

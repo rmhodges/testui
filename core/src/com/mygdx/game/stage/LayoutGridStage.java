@@ -54,6 +54,7 @@ public class LayoutGridStage implements VirtualStage {
         // Render Additional Information such as Physics
         // TODO
 
+        renderBoundaries ();
     }
 
     public LayoutGridStage(Skin skin) {
@@ -145,6 +146,29 @@ public class LayoutGridStage implements VirtualStage {
 
         botLabel.setText(stage.getWidth() / 2 + "," + 0);
         botLabel.setPosition(stage.getWidth() / 2, 0);
+    }
+
+    private void renderBoundaries (){
+        for (GameObject go : gameObjectList){
+
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+
+            shapeRenderer.setColor(Color.GOLD);
+
+            Vector2 start = null;
+
+            for (Vector2 point : go.collisionBoundaries()){
+
+                if (start == null){
+                    start = point;
+                } else {
+                    shapeRenderer.line(start, point);
+                    start = point;
+                }
+            }
+
+            shapeRenderer.end();
+        }
     }
 
     public Stage getStage() {
