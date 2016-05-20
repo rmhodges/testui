@@ -1,6 +1,8 @@
 package com.mygdx.game.actor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -21,6 +23,10 @@ import java.util.List;
  */
 public class GameObject {
 
+    private boolean selected = false;
+
+    private List<Image> boundaryHandles = new ArrayList<Image>(4);
+
     private final String filename;
 
     private final VirtualStage stage;
@@ -32,20 +38,18 @@ public class GameObject {
     final Image selectedImage;
 
 
-
-
     public GameObject(final Skin skin, final VirtualStage stage, final String filename) {
         this.skin = skin;
         this.stage = stage;
         this.filename = filename;
 
-        Texture selectedTexture = new Texture(Gdx.files.internal(filename));
+        final Texture selectedTexture = new Texture(Gdx.files.internal(filename));
 
         final TextureRegion selectedTextureRegion = new TextureRegion(selectedTexture);
 
         selectedImage = new Image(selectedTextureRegion);
 
-        selectedImage.addListener(new ClickListener(){
+        selectedImage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
@@ -59,34 +63,98 @@ public class GameObject {
 
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer, DragAndDrop.Payload payload, DragAndDrop.Target target) {
+
                 stage.getStage().addActor(selectedImage);
+
             }
 
             @Override
-            public DragAndDrop.Payload dragStart (InputEvent event, float x, float y, int pointer) {
+            public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
                 DragAndDrop.Payload payload = new DragAndDrop.Payload();
                 payload.setDragActor(selectedImage);
+
+                System.out.println("X: " + x + "  Y: " + y);
+
                 dragAndDrop.setDragActorPosition(-x, -y + selectedImage.getHeight());
                 return payload;
             }
 
         });
+
+        initialiseHandles ();
+        addHandlesToStage();
     }
 
-    public Actor getActor (){
+    public Actor getActor() {
         return selectedImage;
     }
 
-    public List<Vector2> collisionBoundaries (){
+    public List<Vector2> collisionBoundaries() {
 
-        List<Vector2> boundary = new ArrayList<Vector2> ();
+        List<Vector2> boundary = new ArrayList<Vector2>();
 
-        boundary.add(new Vector2(selectedImage.getImageX(), selectedImage.getImageY()));
-        boundary.add(new Vector2(selectedImage.getImageX() + selectedImage.getImageWidth(), selectedImage.getImageY()));
-        boundary.add(new Vector2(selectedImage.getImageX() + selectedImage.getImageWidth(), selectedImage.getImageY() + selectedImage.getImageHeight()));
-        boundary.add(new Vector2(selectedImage.getImageX(), selectedImage.getImageY() + selectedImage.getImageHeight()));
+        boundary.add(new Vector2(selectedImage.getX(), selectedImage.getY()));
+        boundary.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY()));
+        boundary.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY() + selectedImage.getImageHeight()));
+        boundary.add(new Vector2(selectedImage.getX(), selectedImage.getY() + selectedImage.getImageHeight()));
 
         return boundary;
     }
 
+    private void addHandlesToStage() {
+
+        for (Image boundaryHandle : boundaryHandles) {
+
+            stage.getStage().addActor(boundaryHandle);
+
+        }
+    }
+
+    private void initialiseHandles() {
+
+        boundaryHandles.clear();
+
+        for (Vector2 point : collisionBoundaries()) {
+
+            Pixmap pm = new Pixmap(10, 10, Pixmap.Format.RGBA8888);
+
+            pm.setColor(Color.GOLD);
+
+            pm.fill();
+
+            final Image im = new Image(new Texture(pm));
+
+            im.setPosition(point.x, point.y);
+
+            dragAndDrop.addSource(new DragAndDrop.Source(im){
+
+                @Override
+                public void dragStop(InputEvent event, float x, float y, int pointer, DragAndDrop.Payload payload, DragAndDrop.Target target) {
+
+                    stage.getStage().addActor(im);
+
+                }
+
+                @Override
+                public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
+
+                    DragAndDrop.Payload payload = new DragAndDrop.Payload();
+                    payload.setDragActor(im);
+
+                    System.out.println("X: " + x + "  Y: " + y);
+
+                    dragAndDrop.setDragActorPosition(-x, -y + im.getHeight());
+                    return payload;
+
+                }
+            });
+
+            boundaryHandles.add(im);
+        }
+
+
+    }
+
 }
+
+

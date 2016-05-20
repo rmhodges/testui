@@ -2,13 +2,18 @@ package com.mygdx.game.stage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.actor.GameObject;
+import sun.net.sdp.SdpProvider;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -55,6 +60,7 @@ public class LayoutGridStage implements VirtualStage {
         // TODO
 
         renderBoundaries ();
+
     }
 
     public LayoutGridStage(Skin skin) {
@@ -156,16 +162,23 @@ public class LayoutGridStage implements VirtualStage {
             shapeRenderer.setColor(Color.GOLD);
 
             Vector2 start = null;
+            Vector2 first = null;
+
 
             for (Vector2 point : go.collisionBoundaries()){
 
                 if (start == null){
                     start = point;
+                    first = point;
                 } else {
                     shapeRenderer.line(start, point);
                     start = point;
                 }
             }
+
+            // Close shape
+            shapeRenderer.line(start, first);
+
 
             shapeRenderer.end();
         }
