@@ -39,6 +39,7 @@ public class LayoutGridStage implements VirtualStage {
 
         if (!gameObjectList.contains(gameObjectList)){
             gameObjectList.add(gameObject);
+            gameObject.actorAddedToStage();
         }
     }
 

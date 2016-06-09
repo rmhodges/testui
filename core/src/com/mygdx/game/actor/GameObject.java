@@ -37,6 +37,7 @@ public class GameObject {
 
     final Image selectedImage;
 
+    private List<Vector2> boundary = new ArrayList<Vector2>();
 
     public GameObject(final Skin skin, final VirtualStage stage, final String filename) {
         this.skin = skin;
@@ -81,22 +82,35 @@ public class GameObject {
 
         });
 
-        initialiseHandles ();
-        addHandlesToStage();
     }
 
     public Actor getActor() {
         return selectedImage;
     }
 
+    public void actorAddedToStage (){
+        initialiseHandles ();
+        addHandlesToStage();
+    }
+
+
+
     public List<Vector2> collisionBoundaries() {
 
-        List<Vector2> boundary = new ArrayList<Vector2>();
+        boundary.clear ();
 
         boundary.add(new Vector2(selectedImage.getX(), selectedImage.getY()));
         boundary.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY()));
         boundary.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY() + selectedImage.getImageHeight()));
         boundary.add(new Vector2(selectedImage.getX(), selectedImage.getY() + selectedImage.getImageHeight()));
+
+        if (boundaryHandles.size() == 4){
+            boundaryHandles.get(0).setPosition(selectedImage.getX() - 10, selectedImage.getY() - 10);
+            boundaryHandles.get(1).setPosition(selectedImage.getX()  + selectedImage.getImageWidth(), selectedImage.getY() - 10);
+            boundaryHandles.get(2).setPosition(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY() + selectedImage.getImageHeight());
+            boundaryHandles.get(3).setPosition(selectedImage.getX() - 10, selectedImage.getY() + selectedImage.getImageHeight());
+
+        }
 
         return boundary;
     }
@@ -110,11 +124,15 @@ public class GameObject {
         }
     }
 
+
+
     private void initialiseHandles() {
 
         boundaryHandles.clear();
 
-        for (Vector2 point : collisionBoundaries()) {
+        List<Vector2> collisionBoundaries = collisionBoundaries();
+
+        for (Vector2 point : collisionBoundaries) {
 
             Pixmap pm = new Pixmap(10, 10, Pixmap.Format.RGBA8888);
 
