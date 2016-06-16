@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.mygdx.game.stage.VirtualStage;
@@ -26,6 +27,9 @@ public class GameObject {
     private boolean selected = false;
 
     private List<Image> boundaryHandles = new ArrayList<Image>(4);
+    private List<Vector2> userOffset = new ArrayList<Vector2>(4);
+    private List<Vector2> imageOffset = new ArrayList<Vector2>(4);
+
 
     private final String filename;
 
@@ -49,6 +53,15 @@ public class GameObject {
         final TextureRegion selectedTextureRegion = new TextureRegion(selectedTexture);
 
         selectedImage = new Image(selectedTextureRegion);
+
+        selectedImage.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+
+                System.out.println("CHANGED!!!");
+            }
+        });
+
 
         selectedImage.addListener(new ClickListener() {
             @Override
@@ -94,23 +107,89 @@ public class GameObject {
     }
 
 
+    private void calculateImageBoundaryHandles(){
 
-    public List<Vector2> collisionBoundaries() {
+        boolean initialisePosition = true;
+
+        for (Vector2 offsetVector : imageOffset){
+            if (offsetVector.x != 0 || offsetVector.y != 0){
+                initialisePosition = false;
+            }
+        }
+
+        boolean imagePositionChange = true;
+
+        if (initialisePosition){
+
+            imageOffset.clear();
+
+            imageOffset.add(new Vector2(selectedImage.getX(), selectedImage.getY()));
+            imageOffset.add(new Vector2(selectedImage.getX()  + selectedImage.getImageWidth(), selectedImage.getY()));
+            imageOffset.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY() + selectedImage.getImageHeight()));
+            imageOffset.add(new Vector2(selectedImage.getX(), selectedImage.getY() + selectedImage.getImageHeight()));
+
+        } else {
+            imagePositionChange = hasImagePositionChanged ();
+        }
+
+        if ( imagePositionChange ){
+            if (boundaryHandles.size() == 4){
+                boundaryHandles.get(0).setPosition(imageOffset.get(0).x , imageOffset.get(0).y);
+                boundaryHandles.get(1).setPosition(imageOffset.get(1).x , imageOffset.get(1).y);
+                boundaryHandles.get(2).setPosition(imageOffset.get(2).x , imageOffset.get(2).y);
+                boundaryHandles.get(3).setPosition(imageOffset.get(3).x , imageOffset.get(3).y);
+
+                imageOffset.clear();
+
+                imageOffset.add(new Vector2(selectedImage.getX(), selectedImage.getY()));
+                imageOffset.add(new Vector2(selectedImage.getX()  + selectedImage.getImageWidth(), selectedImage.getY()));
+                imageOffset.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY() + selectedImage.getImageHeight()));
+                imageOffset.add(new Vector2(selectedImage.getX(), selectedImage.getY() + selectedImage.getImageHeight()));
+
+            }
+
+        }
+
+
+    }
+
+    private boolean hasImagePositionChanged (){
+
+        if (imageOffset.get(0).x == selectedImage.getX() && imageOffset.get(0).y == selectedImage.getY() )
+        {
+            if (imageOffset.get(1).x == selectedImage.getX() + selectedImage.getImageWidth() && imageOffset.get(1).y == selectedImage.getY())
+            {
+                if (imageOffset.get(2).x == selectedImage.getX() + selectedImage.getImageWidth() && imageOffset.get(2).y == selectedImage.getY() + selectedImage.getImageHeight())
+                {
+                    if (imageOffset.get(3).x == selectedImage.getX() && imageOffset.get(3).y == selectedImage.getY() + selectedImage.getImageHeight())
+                    {
+                        return false;
+                    }
+
+                }
+
+            }
+        }
+        return true;
+    }
+
+    public List<Vector2> calculateImageBoundary() {
+
+        calculateImageBoundaryHandles ();
 
         boundary.clear ();
 
-        boundary.add(new Vector2(selectedImage.getX(), selectedImage.getY()));
-        boundary.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY()));
-        boundary.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY() + selectedImage.getImageHeight()));
-        boundary.add(new Vector2(selectedImage.getX(), selectedImage.getY() + selectedImage.getImageHeight()));
+        boundary.add(new Vector2(imageOffset.get(0).x , imageOffset.get(0).y));
+        boundary.add(new Vector2(imageOffset.get(1).x , imageOffset.get(1).y));
+        boundary.add(new Vector2(imageOffset.get(2).x , imageOffset.get(2).y));
+        boundary.add(new Vector2(imageOffset.get(3).x , imageOffset.get(3).y));
 
-        if (boundaryHandles.size() == 4){
-            boundaryHandles.get(0).setPosition(selectedImage.getX() - 10, selectedImage.getY() - 10);
-            boundaryHandles.get(1).setPosition(selectedImage.getX()  + selectedImage.getImageWidth(), selectedImage.getY() - 10);
-            boundaryHandles.get(2).setPosition(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY() + selectedImage.getImageHeight());
-            boundaryHandles.get(3).setPosition(selectedImage.getX() - 10, selectedImage.getY() + selectedImage.getImageHeight());
+//        boundary.add(new Vector2(selectedImage.getX(), selectedImage.getY()));
+//        boundary.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY()));
+//        boundary.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY() + selectedImage.getImageHeight()));
+//        boundary.add(new Vector2(selectedImage.getX(), selectedImage.getY() + selectedImage.getImageHeight()));
 
-        }
+
 
         return boundary;
     }
@@ -130,7 +209,7 @@ public class GameObject {
 
         boundaryHandles.clear();
 
-        List<Vector2> collisionBoundaries = collisionBoundaries();
+        List<Vector2> collisionBoundaries = calculateImageBoundary();
 
         for (Vector2 point : collisionBoundaries) {
 
@@ -150,6 +229,8 @@ public class GameObject {
                 public void dragStop(InputEvent event, float x, float y, int pointer, DragAndDrop.Payload payload, DragAndDrop.Target target) {
 
                     stage.getStage().addActor(im);
+
+                    System.out.println("Handle offset is " + im.getX() + ", " + im.getY());
 
                 }
 
