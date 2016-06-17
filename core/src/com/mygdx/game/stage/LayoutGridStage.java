@@ -160,9 +160,7 @@ public class LayoutGridStage implements VirtualStage {
             Vector2 start = null;
             Vector2 first = null;
 
-//            go.calculateImageBoundaryHandles ();
-
-            for (Vector2 point : go.calculateImageBoundary()){
+            for (Vector2 point : go.getBoundaries()){
 
                 if (start == null){
                     start = point;
@@ -174,7 +172,10 @@ public class LayoutGridStage implements VirtualStage {
             }
 
             // Close shape
-            shapeRenderer.line(start, first);
+            if (start != null && first != null)
+            {
+                shapeRenderer.line(start, first);
+            }
 
 
             shapeRenderer.end();

@@ -173,21 +173,27 @@ public class GameObject {
         return true;
     }
 
+    public List<Vector2> getBoundaries (){
+        calculateImageBoundaryHandles ();
+
+        List<Vector2> result = new ArrayList<Vector2>();
+
+        for (Image handle : boundaryHandles){
+            result.add(new Vector2(handle.getX(), handle.getY()));
+        }
+        return result;
+    }
+
     public List<Vector2> calculateImageBoundary() {
 
         calculateImageBoundaryHandles ();
 
         boundary.clear ();
 
-        boundary.add(new Vector2(imageOffset.get(0).x , imageOffset.get(0).y));
-        boundary.add(new Vector2(imageOffset.get(1).x , imageOffset.get(1).y));
-        boundary.add(new Vector2(imageOffset.get(2).x , imageOffset.get(2).y));
-        boundary.add(new Vector2(imageOffset.get(3).x , imageOffset.get(3).y));
-
-//        boundary.add(new Vector2(selectedImage.getX(), selectedImage.getY()));
-//        boundary.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY()));
-//        boundary.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY() + selectedImage.getImageHeight()));
-//        boundary.add(new Vector2(selectedImage.getX(), selectedImage.getY() + selectedImage.getImageHeight()));
+        boundary.add(new Vector2(selectedImage.getX(), selectedImage.getY()));
+        boundary.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY()));
+        boundary.add(new Vector2(selectedImage.getX() + selectedImage.getImageWidth(), selectedImage.getY() + selectedImage.getImageHeight()));
+        boundary.add(new Vector2(selectedImage.getX(), selectedImage.getY() + selectedImage.getImageHeight()));
 
 
 
